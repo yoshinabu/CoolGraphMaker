@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<!--This file contains sample configuration of graph-->
+<!--Data class GraphDataSetting.cs is created from this xml structure.-->
+<Data>
+  <!--Pair contains 2 lines as data of X axis and Y axis.-->
+  <!--You can specify scale using "log" or "linear".-->
+  <!--MajorXXXX is used to specify where to draw major line. -->
+  <!--MinorXXXX is used to specify where to draw minor line.-->
+  <!--Example : If you specify "log" as X axis scale and MajorOfXAxis="10" and  MinorMinorOfXAxis="", 
+  major lines are drawn at 10, 100, 1000, 10000, ... this means 10, 10*10, 10*10*10,...-->
+  <!--Example : If you specify "linear" as X axis scale, this simply draw major lines at every MajorOfXAxis and 
+  drar minor line at every MinorOfYAxis.-->
+  <!--HeaderText and FooterText are now availabe only for text. ... to be implemented to take some parameter like %DataCount%, %ValidData%, blahblah...-->
+  <Pair Index="1" LegendNameOfXAxis="Frequency [ Hz ]" LegendNameOfYAxis="SPL [ dB ]" 
+        GraphTitle="Frequency Response"
+        ScaleOfXAxis="log" ScaleOfYAxis="linear"
+        MaximumOfX="100000" MinimunOfX="10" MaximumOfY="130" MinimumOfY="80"
+        MajorOfXAxis="10" MinorOfXAxis=""
+        MajorOfYAxis="10" MinorOfYAxis="5"
+        HeaderText="" FooterText="">
+    <!--Index is just hint for program.-->
+    <!--XData indicates this data is for plotting X data.-->
+    <!--DataRow indicates which row is used to plot data.-->
+    <!--StartDataColumn indicates where to start reading data.-->
+    <!--EndDataColumn indicates where to finish reading data.-->
+    <!--Color indicates color to plot and connect this data. If not specified, means black.-->
+    <DataLine Index="1" XData="Yes" DataRow="3" StartDataColumn="3" EndDataColumn="81" Color="" />
+    <DataLine Index="2" XData="No" DataRow="3" StartDataColumn="3" EndDataColumn="81" Color="" />
+  </Pair>
+</Data>

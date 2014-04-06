@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Data" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="Data" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Pair">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="DataLine" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="Index" type="xs:string" />
+                  <xs:attribute name="XData" type="xs:string" />
+                  <xs:attribute name="DataRow" type="xs:string" />
+                  <xs:attribute name="StartDataColumn" type="xs:string" />
+                  <xs:attribute name="EndDataColumn" type="xs:string" />
+                  <xs:attribute name="Color" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Index" type="xs:string" />
+            <xs:attribute name="LegendNameOfXAxis" type="xs:string" />
+            <xs:attribute name="LegendNameOfYAxis" type="xs:string" />
+            <xs:attribute name="GraphTitle" type="xs:string" />
+            <xs:attribute name="ScaleOfXAxis" type="xs:string" />
+            <xs:attribute name="ScaleOfYAxis" type="xs:string" />
+            <xs:attribute name="MaximumOfX" type="xs:string" />
+            <xs:attribute name="MinimunOfX" type="xs:string" />
+            <xs:attribute name="MaximumOfY" type="xs:string" />
+            <xs:attribute name="MinimumOfY" type="xs:string" />
+            <xs:attribute name="MajorOfXAxis" type="xs:string" />
+            <xs:attribute name="MinorOfXAxis" type="xs:string" />
+            <xs:attribute name="MajorOfYAxis" type="xs:string" />
+            <xs:attribute name="MinorOfYAxis" type="xs:string" />
+            <xs:attribute name="HeaderText" type="xs:string" />
+            <xs:attribute name="FooterText" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
