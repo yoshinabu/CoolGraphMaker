@@ -21,17 +21,19 @@ namespace CoolGraphMaker
         readonly int rightMergin = 5;
         readonly int bottomMergin = 20;
 
-        // data class which reads data from xml
-        ConfigurationData config;
+        // configuration xml source
+        System.Xml.Linq.XElement xmlSource;
 
         public GpaphMaker()
         {
             InitializeComponent();
 
-            RaedData();
+            xmlSource = System.Xml.Linq.XElement.Load(@".\GraphDataSetting.xml");
+            
             InitializeMenu();
 
-            DrawGraph();
+            // Start drawing
+            //DrawGraph();
 
         }
 
@@ -41,46 +43,22 @@ namespace CoolGraphMaker
             // Add graph selection combo box
             ToolStripComboBox combo = new ToolStripComboBox("graphSelection");
 
-            foreach (DataPair d in config.data.Items)
+            var pairs = (
+                from p in xmlSource.Elements()
+                select p);
+            foreach (System.Xml.Linq.XElement pair in pairs)
             {
-                combo.Items.Add(d.GraphTitle);
+                combo.Items.Add(pair.Attribute("GraphTitle").Value.ToString());
             }
             combo.SelectedIndex = 0;
-
             menuStrip.Items.Add(combo);
-        }
-
-        private void RaedData()
-        {
-            config = new ConfigurationData();
-            config.ReadConfiguration();
-
-            ////// Reading sample
-            ////// 
-            ////string prop = "";
-            ////foreach (DataPair item in config.data.Items)
-            ////{
-            ////    // Reading index of this pari
-            ////    prop += item.Index;
-            ////    prop += ", ";
-
-            ////    // Reading graph title of each pair
-            ////    prop += item.GraphTitle;
-            ////    prop += "\n";
-
-            ////    // Do not set value of each item.
-            ////}
-
-            ////MessageBox.Show(prop, prop, MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
-
-
         }
 
         private void DrawGraph()
         {
             //DrawTitle();
             DrawGraphArea();
-            //DrawLegent();
+            //DrawLegend();
             //DrawInfo();
         }
 
@@ -89,27 +67,57 @@ namespace CoolGraphMaker
             throw new NotImplementedException();
         }
 
-        private void DrawLegent()
+        private void DrawLegend()
         {
             throw new NotImplementedException();
         }
 
         private void DrawGraphArea()
         {
+            DrawOutbound();
+
             // Still under construction.
             // Here just sample drawing.
-            var canvas = new Bitmap(graphArea.Width, graphArea.Height);
+            //var canvas = new Bitmap(graphArea.Width, graphArea.Height);
 
-            Graphics g = Graphics.FromImage(canvas);
+            //Graphics g = Graphics.FromImage(canvas);
 
-            g.FillRectangle(Brushes.Black, 10, 20, 100, 80);
-            g.Dispose();
+            //g.FillRectangle(Brushes.Black, 10, 20, 100, 80);
+            //g.Dispose();
 
-            graphArea.Image = canvas;
+            //graphArea.Image = canvas;
 
 
             //throw new NotImplementedException();
         }
+
+        private void DrawOutbound()
+        {
+            Rectangle clientArea = graphArea.ClientRectangle;
+
+            int left, top, right, bottom = 0;
+
+            int xUnit = clientArea.Width / 100;
+            int yUnit = clientArea.Height / 100;
+
+            left = xUnit * leftMergin;
+            top = yUnit * topMergin;
+            right = clientArea.Right - (xUnit * rightMergin);
+            bottom = clientArea.Bottom - (yUnit * bottomMergin);
+
+            Rectangle outboundRect = new Rectangle(left, top, right - left, bottom - top);
+            var canvas = new Bitmap(graphArea.Width, graphArea.Height);
+
+            Graphics g = Graphics.FromImage(canvas);
+            g.DrawRectangle(Pens.Red, outboundRect);
+
+            g.Dispose();
+            graphArea.Image = canvas;
+
+
+            
+        }
+
 
         private void DrawTitle()
         {
