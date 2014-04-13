@@ -96,6 +96,7 @@ namespace CoolGraphMaker
             xUnit = clientArea.Width / 100;
             yUnit = clientArea.Height / 100;
 
+            // Calculate each edge
             graphBorderLTPoint.X = (int)(xUnit * leftMergin);
             graphBorderLTPoint.Y = (int)(yUnit * topMergin);
             graphBorderLBPoint.X = graphBorderLTPoint.X;
@@ -633,6 +634,13 @@ namespace CoolGraphMaker
         private void graphSelection_Click(object sender, EventArgs e)
         {
             // Implement graph selection change
+        }
+
+        private void GpaphMaker_ResizeEnd(object sender, EventArgs e)
+        {
+            graphicLayers.Clear();
+            graphArea.Image = null;
+            DrawGraph();
         }
     }
 }

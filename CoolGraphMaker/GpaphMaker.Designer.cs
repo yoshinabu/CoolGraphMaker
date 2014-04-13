@@ -40,9 +40,9 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.graphSelectionComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.graphArea = new System.Windows.Forms.PictureBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.graphSelectionComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphArea)).BeginInit();
             this.SuspendLayout();
@@ -138,6 +138,11 @@
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.aboutToolStripMenuItem.Text = "About";
             // 
+            // graphSelectionComboBox
+            // 
+            this.graphSelectionComboBox.Name = "graphSelectionComboBox";
+            this.graphSelectionComboBox.Size = new System.Drawing.Size(121, 23);
+            // 
             // graphArea
             // 
             this.graphArea.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -158,11 +163,6 @@
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // graphSelectionComboBox
-            // 
-            this.graphSelectionComboBox.Name = "graphSelectionComboBox";
-            this.graphSelectionComboBox.Size = new System.Drawing.Size(121, 23);
-            // 
             // GpaphMaker
             // 
             this.AllowDrop = true;
@@ -175,6 +175,7 @@
             this.MainMenuStrip = this.menuStrip;
             this.Name = "GpaphMaker";
             this.Text = "Graph maker";
+            this.ResizeEnd += new System.EventHandler(this.GpaphMaker_ResizeEnd);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.GpaphMaker_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.GpaphMaker_DragEnter);
             this.menuStrip.ResumeLayout(false);
