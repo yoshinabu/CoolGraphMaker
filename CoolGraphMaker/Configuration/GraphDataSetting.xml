@@ -14,6 +14,7 @@
   <Pair Index="1" LegendNameOfXAxis="Frequency [ Hz ]" LegendNameOfYAxis="SPL [ dB ]" 
         GraphTitle="Frequency Response"
         ScaleOfXAxis="log" ScaleOfYAxis="linear"
+        LogBaseOfXAxis="10" LogBaseOfYAxis="0"
         MaximumOfX="100000" MinimunOfX="10" MaximumOfY="130" MinimumOfY="80"
         MajorOfXAxis="10" MinorOfXAxis=""
         MajorOfYAxis="10" MinorOfYAxis="5"

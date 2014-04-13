@@ -42,6 +42,7 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.graphArea = new System.Windows.Forms.PictureBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.graphSelectionComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphArea)).BeginInit();
             this.SuspendLayout();
@@ -52,10 +53,11 @@
             this.fileToolStripMenuItem,
             this.viewToolStripMenuItem,
             this.editToolStripMenuItem,
-            this.toolStripMenuItem1});
+            this.toolStripMenuItem1,
+            this.graphSelectionComboBox});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(553, 24);
+            this.menuStrip.Size = new System.Drawing.Size(531, 27);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -66,7 +68,7 @@
             this.loadSettingFileToolStripMenuItem,
             this.saveGraphAsImageToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 23);
             this.fileToolStripMenuItem.Text = "&File";
             // 
             // loadDataFileToolStripMenuItem
@@ -92,7 +94,7 @@
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.redrawGraphToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 23);
             this.viewToolStripMenuItem.Text = "View";
             // 
             // redrawGraphToolStripMenuItem
@@ -106,7 +108,7 @@
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.editTextOnGraphToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 23);
             this.editToolStripMenuItem.Text = "&Edit";
             // 
             // editTextOnGraphToolStripMenuItem
@@ -121,7 +123,7 @@
             this.helpToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(24, 20);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(24, 23);
             this.toolStripMenuItem1.Text = "?";
             // 
             // helpToolStripMenuItem
@@ -144,24 +146,29 @@
             this.graphArea.BackColor = System.Drawing.SystemColors.Window;
             this.graphArea.Location = new System.Drawing.Point(0, 27);
             this.graphArea.Name = "graphArea";
-            this.graphArea.Size = new System.Drawing.Size(553, 266);
+            this.graphArea.Size = new System.Drawing.Size(531, 321);
             this.graphArea.TabIndex = 1;
             this.graphArea.TabStop = false;
             // 
             // statusStrip1
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 296);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 351);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(553, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(531, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // graphSelectionComboBox
+            // 
+            this.graphSelectionComboBox.Name = "graphSelectionComboBox";
+            this.graphSelectionComboBox.Size = new System.Drawing.Size(121, 23);
             // 
             // GpaphMaker
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(553, 318);
+            this.ClientSize = new System.Drawing.Size(531, 373);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.graphArea);
             this.Controls.Add(this.menuStrip);
@@ -194,6 +201,7 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.PictureBox graphArea;
         private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripComboBox graphSelectionComboBox;
     }
 }
 
