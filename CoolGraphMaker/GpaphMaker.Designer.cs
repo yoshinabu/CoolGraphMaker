@@ -142,6 +142,7 @@
             // 
             this.graphSelectionComboBox.Name = "graphSelectionComboBox";
             this.graphSelectionComboBox.Size = new System.Drawing.Size(121, 23);
+            this.graphSelectionComboBox.SelectedIndexChanged += new System.EventHandler(this.graphSelectionComboBox_SelectedIndexChanged);
             // 
             // graphArea
             // 
