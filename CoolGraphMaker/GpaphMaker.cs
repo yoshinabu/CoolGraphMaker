@@ -40,8 +40,8 @@ namespace CoolGraphMaker
         Point graphBorderRBPoint; // right and bottom
 
         // Data to be drawn
-        List<float> xDataSet;
-        List<float> yDataSet;
+        List<List<float>> xDataSet;
+        List<List<float>> yDataSet;
 
         // First drawing has done
         bool hasDrawnOnce;
@@ -60,8 +60,8 @@ namespace CoolGraphMaker
             graphicLayers = new List<GraphicLayer>();
             InitializeMenu();
 
-            xDataSet = new List<float>();
-            yDataSet = new List<float>();
+            xDataSet = new List<List<float>>();
+            yDataSet = new List<List<float>>();
 
             // Start drawing
             DrawGraph();
@@ -669,6 +669,18 @@ namespace CoolGraphMaker
                 return;
             }
 
+            // Check each data has same number of data.
+            for (int i = 0; i < xDataSet.Count(); i++)
+            {
+                if (xDataSet[i].Count != yDataSet[i].Count)
+                {
+                    string message = "Number of x data and y data is different at " + i;
+                    MessageBox.Show(message);
+                    return;
+                }
+            }
+
+
 
             int xMax = (int)selectedPair.Attribute("MaximumOfX");
             int xMin = (int)selectedPair.Attribute("MinimunOfX");
@@ -684,29 +696,40 @@ namespace CoolGraphMaker
             string yScaleType = (string)selectedPair.Attribute("ScaleOfYAxis");
             SCALETYPE yScale = yScaleType == "log" ? SCALETYPE.SCALE_LOG : SCALETYPE.SCALE_LINEAR;
 
-            
-            List<PointF> drawPoints = new List<PointF>();
-            for (int i = 0; i < xDataSet.Count; i++)
+
+            // Draw all data set !
+            for (int index = 0; index < xDataSet.Count(); index++)
             {
-                PointF tmp = new PointF();
-                float distance = GetDistance(xMin, xMax, xDataSet[i], xScale, true);
-                float actualDistance = distance * graphBorderRect.Width;
 
-                tmp.X = graphBorderLBPoint.X + actualDistance;
+                List<float> xDataOfOneLine = xDataSet[index];
+                List<float> yDataOfOneLine = yDataSet[index];
 
-                distance = GetDistance(yMin, yMax, yDataSet[i], yScale, false);
-                actualDistance = distance * graphBorderRect.Height;
-                tmp.Y = graphBorderLBPoint.Y - actualDistance;
 
-                drawPoints.Add(tmp);
-            }
+                List<PointF> drawPoints = new List<PointF>();
+                for (int i = 0; i < xDataOfOneLine.Count; i++)
+                {
+                    PointF tmp = new PointF();
+                    float distance = GetDistance(xMin, xMax, xDataOfOneLine[i], xScale, true);
+                    float actualDistance = distance * graphBorderRect.Width;
 
-            // Draw !
+                    tmp.X = graphBorderLBPoint.X + actualDistance;
 
-            for (int i = 0; i < drawPoints.Count(); i++)
-            {
-                Pen circle = new Pen(Brushes.Black);
-                g.DrawEllipse(circle, drawPoints[i].X, drawPoints[i].Y, 4.0f, 4.0f);
+                    distance = GetDistance(yMin, yMax, yDataOfOneLine[i], yScale, false);
+                    actualDistance = distance * graphBorderRect.Height;
+                    tmp.Y = graphBorderLBPoint.Y - actualDistance;
+
+                    drawPoints.Add(tmp);
+                }
+
+                // Draw this line !
+
+                for (int i = 0; i < drawPoints.Count(); i++)
+                {
+                    // This shold be re-thought.
+                    // Connectin point to point line is needed !
+                    g.FillEllipse(Brushes.Black, drawPoints[i].X, drawPoints[i].Y, 2.5f, 2.5f);
+                }
+
             }
             g.Dispose();
 
@@ -754,27 +777,45 @@ namespace CoolGraphMaker
             // X related data
             int xDataStart = (int)xData.Attribute("StartDataColumn");
             int xDataEnd = (int)xData.Attribute("EndDataColumn");
-            int xDataRow = (int)xData.Attribute("DataRow");
-            // hmmm, could be done with skip or skipwhile...?
-            // Data row should be -1. Because line number is specified from 1 
-            //  but starting from 0 in program.
-            string[] tmp = results[xDataRow - 1]; 
-            for (int col = xDataStart - 1, index = 0; col < xDataEnd - 1; col++, index++)
-            {
-                xDataSet.Add(float.Parse(tmp[col]));
-            }
+            int xFirstDataRow = (int)xData.Attribute("FirstDataRow");
 
+            for (int row = xFirstDataRow; row < results.Count(); )
+            {
+                List<float> xDataSetOfOneLine = new List<float>();
+
+                // hmmm, could be done with skip or skipwhile...?
+                // Data row should be -1. Because line number is specified from 1 
+                //  but starting from 0 in program.
+                string[] tmp = results[row - 1];
+                for (int col = xDataStart - 1, index = 0; col < xDataEnd - 1; col++, index++)
+                {
+                    xDataSetOfOneLine.Add(float.Parse(tmp[col]));
+                }
+
+                xDataSet.Add(xDataSetOfOneLine);
+
+                row += 12;
+            }
 
             // y related data
             int yDataStart = (int)yData.Attribute("StartDataColumn");
             int yDataEnd = (int)yData.Attribute("EndDataColumn");
-            int yDataRow = (int)yData.Attribute("DataRow");
-            tmp = results[yDataRow - 1];
-            for (int col = yDataStart - 1, index = 0; col < yDataEnd - 1; col++, index++)
-            {
-                yDataSet.Add(float.Parse(tmp[col]));
-            }
+            int yFirstDataRow = (int)yData.Attribute("FirstDataRow");
 
+            for (int row = yFirstDataRow; row < results.Count(); )
+            {
+                List<float> yDataSetOfOneLine = new List<float>();
+
+                string[] tmp = results[row - 1];
+                for (int col = yDataStart - 1, index = 0; col < yDataEnd - 1; col++, index++)
+                {
+                    yDataSetOfOneLine.Add(float.Parse(tmp[col]));
+                }
+
+                row += 12;
+
+                yDataSet.Add(yDataSetOfOneLine);
+            }
         }
 
         private void DrawAllLayers()
