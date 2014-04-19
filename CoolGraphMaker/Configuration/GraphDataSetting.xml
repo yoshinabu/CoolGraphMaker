@@ -1,9 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?> 
-<!--This file contains sample configuration of graph-->
-<!--Data class GraphDataSetting.cs is created from this xml structure.-->
+<!--This file contains configuration of graph-->
 <Data>
   <!--Pair contains 2 lines as data of X axis and Y axis.-->
-  <!--You can specify scale using "log" or "linear".-->
+  <!--You can specify scale using "log" or "linear". Then specify base of log.-->
   <!--MajorXXXX is used to specify where to draw major line. -->
   <!--MinorXXXX is used to specify where to draw minor line.-->
   <!--Example : If you specify "log" as X axis scale and MajorOfXAxis="10" and  MinorMinorOfXAxis="", 
@@ -16,16 +15,47 @@
         ScaleOfXAxis="log" ScaleOfYAxis="linear"
         LogBaseOfXAxis="10" LogBaseOfYAxis="0"
         MaximumOfX="100000" MinimunOfX="10" MaximumOfY="130" MinimumOfY="80"
-        MajorOfXAxis="10" MinorOfXAxis=""
+        MajorOfXAxis="10" MinorOfXAxis="10"
         MajorOfYAxis="10" MinorOfYAxis="5"
         HeaderText="" FooterText="">
     <!--Index is just hint for program.-->
     <!--XData indicates this data is for plotting X data.-->
-    <!--DataRow indicates which row is used to plot data.-->
+    <!--DataRow indicates which row is first data used to plot data. FirstDataRow = 12*lineNunber - X. X is actual variable but using first data row for easy understanding.-->
     <!--StartDataColumn indicates where to start reading data.-->
     <!--EndDataColumn indicates where to finish reading data.-->
     <!--Color indicates color to plot and connect this data. If not specified, means black.-->
-    <DataLine Index="1" XData="Yes" DataRow="3" StartDataColumn="3" EndDataColumn="81" Color="" />
-    <DataLine Index="2" XData="No" DataRow="3" StartDataColumn="3" EndDataColumn="81" Color="" />
+    <DataLine Index="1" XData="Yes" FirstDataRow="3" StartDataColumn="3" EndDataColumn="81" Color="" />
+    <DataLine Index="2" XData="No" FirstDataRow="4" StartDataColumn="3" EndDataColumn="81" Color="" />
+  </Pair>
+
+  <Pair Index="2" LegendNameOfXAxis="Frequency [ Hz ]" LegendNameOfYAxis="THD [ % ]"
+        GraphTitle="THD"
+        ScaleOfXAxis="log" ScaleOfYAxis="linear"
+        LogBaseOfXAxis="10" LogBaseOfYAxis="0"
+        MaximumOfX="100000" MinimunOfX="10" MaximumOfY="20" MinimumOfY="0"
+        MajorOfXAxis="10" MinorOfXAxis="0"
+        MajorOfYAxis="5" MinorOfYAxis="1">
+    <DataLine Index="1" XData="Yes" FirstDataRow="5" StartDataColumn="3" EndDataColumn="69" Color="" />
+    <DataLine Index="2" XData="No" FirstDataRow="6" StartDataColumn="3" EndDataColumn="69" Color="" />
+  </Pair>
+  <Pair Index="3" LegendNameOfXAxis="Frequency [ Hz ]" LegendNameOfYAxis="HOHD [ % ]"
+        GraphTitle="HOHD"
+        ScaleOfXAxis="log" ScaleOfYAxis="linear"
+        LogBaseOfXAxis="10" LogBaseOfYAxis="0"
+        MaximumOfX="10000" MinimunOfX="10" MaximumOfY="1" MinimumOfY="0"
+        MajorOfXAxis="10" MinorOfXAxis="0"
+        MajorOfYAxis="0.1" MinorOfYAxis="0.05">
+    <DataLine Index="1" XData="Yes" FirstDataRow="7" StartDataColumn="3" EndDataColumn="38" Color="" />
+    <DataLine Index="2" XData="No" FirstDataRow="8" StartDataColumn="3" EndDataColumn="38" Color="" />
+  </Pair>
+  <Pair Index="4" LegendNameOfXAxis="Frequency [ Hz ]" LegendNameOfYAxis="IMP [ Ohm ]"
+        GraphTitle="IMP"
+        ScaleOfXAxis="log" ScaleOfYAxis="linear"
+        LogBaseOfXAxis="10" LogBaseOfYAxis="0"
+        MaximumOfX="100000" MinimunOfX="10" MaximumOfY="100" MinimumOfY="0"
+        MajorOfXAxis="10" MinorOfXAxis="0"
+        MajorOfYAxis="10" MinorOfYAxis="5">
+    <DataLine Index="1" XData="Yes" FirstDataRow="9" StartDataColumn="3" EndDataColumn="81" Color="" />
+    <DataLine Index="2" XData="No" FirstDataRow="10" StartDataColumn="3" EndDataColumn="81" Color="" />
   </Pair>
 </Data>

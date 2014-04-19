@@ -39,6 +39,10 @@ namespace CoolGraphMaker
         Point graphBorderRTPoint; // right and bottom
         Point graphBorderRBPoint; // right and bottom
 
+        // Scale string drawing point
+        List<Point> xScalePoints;
+        List<Point> yScalePoints;
+
         // Data to be drawn
         List<List<float>> xDataSet;
         List<List<float>> yDataSet;
@@ -62,6 +66,9 @@ namespace CoolGraphMaker
 
             xDataSet = new List<List<float>>();
             yDataSet = new List<List<float>>();
+
+            xScalePoints = new List<Point>();
+            yScalePoints = new List<Point>();
 
             // Start drawing
             DrawGraph();
@@ -92,7 +99,7 @@ namespace CoolGraphMaker
             DrawGraphArea();
             DrawTitle();
             //DrawLegend();
-            //DrawMiscInfo();
+            DrawMiscInfo();
             DrawLine();
 
             DrawAllLayers();
@@ -100,7 +107,7 @@ namespace CoolGraphMaker
 
         private void DrawMiscInfo()
         {
-            throw new NotImplementedException();
+
         }
 
         private void DrawLegend()
@@ -254,7 +261,7 @@ namespace CoolGraphMaker
             // Draw major lines
             if (scaleType.CompareTo("linear") == 0)
             {
-                for (float majorLine = min; majorLine < max; )
+                for (float majorLine = min; majorLine <= max; )
                 {
                     // distance in percent/100 from 0 point
                     float distance = GetDistance(min, max, majorLine, SCALETYPE.SCALE_LINEAR, drawX);
@@ -297,6 +304,11 @@ namespace CoolGraphMaker
                     }
 
                     g.DrawLine(Pens.Red, start, end);
+
+                    if (drawX)
+                        xScalePoints.Add(start);
+                    else
+                        yScalePoints.Add(start);
 
                     majorLine += majorLineSpan;
                 }
@@ -559,6 +571,28 @@ namespace CoolGraphMaker
             return distance;
         }
 
+        private void DrawScaleString(float majorLine, Point majorLineStart)
+        {
+            Rectangle clientArea = graphArea.ClientRectangle;
+
+            Bitmap canvas = new Bitmap(graphArea.Width, graphArea.Height);
+            Graphics g = Graphics.FromImage(canvas);
+
+
+
+
+
+
+            g.Dispose();
+
+            // Add to layers
+            GraphicLayer layer = new GraphicLayer("scale", canvas, graphicLayers.Count());
+            graphicLayers.Add(layer);
+            canvas.Save(layer.zOrder + layer.name + ".png",
+                System.Drawing.Imaging.ImageFormat.Png);
+          
+        }
+
         private void DrawTitle()
         {
             Rectangle clientArea = graphArea.ClientRectangle;
@@ -722,12 +756,14 @@ namespace CoolGraphMaker
                 }
 
                 // Draw this line !
-
-                for (int i = 0; i < drawPoints.Count(); i++)
+                // Starting from 1, means draw line 0 to 1, 1 to 2,...
+                for (int i = 1; i < drawPoints.Count(); i++)
                 {
-                    // This shold be re-thought.
-                    // Connectin point to point line is needed !
-                    g.FillEllipse(Brushes.Black, drawPoints[i].X, drawPoints[i].Y, 2.5f, 2.5f);
+                    // This is drawing circle
+                    //g.FillEllipse(Brushes.Black, drawPoints[i].X, drawPoints[i].Y, 2.5f, 2.5f);
+
+                    // Drawing line 
+                    g.DrawLine(Pens.Black, drawPoints[i - 1], drawPoints[i]);
                 }
 
             }
