@@ -88,6 +88,7 @@
             this.saveGraphAsImageToolStripMenuItem.Name = "saveGraphAsImageToolStripMenuItem";
             this.saveGraphAsImageToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.saveGraphAsImageToolStripMenuItem.Text = "Save graph as image";
+            this.saveGraphAsImageToolStripMenuItem.Click += new System.EventHandler(this.saveGraphAsImageToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
             // 

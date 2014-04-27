@@ -75,7 +75,8 @@ namespace CoolGraphMaker
             yScaleValues = new List<float>();
 
             // Start drawing
-            DrawGraph();
+            Graphics g = null;
+            DrawGraph(ref g);
 
             hasDrawnOnce = true;
         }
@@ -97,19 +98,42 @@ namespace CoolGraphMaker
             graphSelectionComboBox.SelectedIndex = 0;
         }
 
-        private void DrawGraph()
+        /// <summary>
+        /// If Graphics g is not null, this function is called when graph is saved as image.
+        /// In that case width and height are also should be specified.
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        private void DrawGraph(ref Graphics g, int width = 0, int height = 0)
         {
-            CalculateGeneralInfo();
-            DrawGraphArea();
-            DrawTitle();
-            //DrawLegend();
-            DrawMiscInfo();
-            DrawLine();
+            if (g == null)
+            {
+                CalculateGeneralInfo();
+                DrawGraphArea();
+                DrawTitle();
+                //DrawLegend();
+                DrawMiscInfo();
+                DrawLine();
 
-            DrawAllLayers();
+                DrawAllLayers(ref g);
+            }
+            else
+            {
+                
+                CalculateGeneralInfo(width, height);
+                DrawGraphArea(width, height);
+                DrawTitle(width, height);
+                //DrawLegend();
+                DrawMiscInfo(width, height);
+                DrawLine(width, height);
+
+                DrawAllLayers(ref g);
+            }
+
         }
 
-        private void DrawMiscInfo()
+        private void DrawMiscInfo(int width = 0, int height = 0)
         {
 
         }
@@ -118,9 +142,11 @@ namespace CoolGraphMaker
         {
             throw new NotImplementedException();
         }
-        private void CalculateGeneralInfo()
+        private void CalculateGeneralInfo(int width = 0, int height = 0)
         {
-            Rectangle clientArea = graphArea.ClientRectangle;
+            Rectangle clientArea = new Rectangle(0, 0, width, height);
+            if (width == 0 && height == 0)
+                clientArea = graphArea.ClientRectangle;
 
             xUnit = clientArea.Width / 100;
             yUnit = clientArea.Height / 100;
@@ -140,19 +166,25 @@ namespace CoolGraphMaker
                 graphBorderRBPoint.X - graphBorderLTPoint.X,
                 graphBorderRBPoint.Y - graphBorderLTPoint.Y);
         }
-        private void DrawGraphArea()
+        private void DrawGraphArea(int width = 0, int height = 0)
         {
-            DrawBackGround();
-            DrawGraphBorder();
-            DrawXVerticalLines();
-            DrawYHorizontalLines();
+            DrawBackGround(width, height);
+            DrawGraphBorder(width, height);
+            DrawXVerticalLines(width, height);
+            DrawYHorizontalLines(width, height);
         }
 
-        private void DrawBackGround()
+        private void DrawBackGround(int width = 0, int height = 0)
         {
-            Bitmap canvas = new Bitmap(graphArea.Width, graphArea.Height);
+            Bitmap canvas;
+            if (width != 0 && height != 0)
+                canvas = new Bitmap(width, height);
+            else 
+                canvas = new Bitmap(graphArea.Width, graphArea.Height);
             //canvas.MakeTransparent();
-            graphArea.DrawToBitmap(canvas, graphArea.ClientRectangle);
+            
+            
+            //graphArea.DrawToBitmap(canvas, graphArea.ClientRectangle);
             
             Graphics g = Graphics.FromImage(canvas);
             g.Dispose();
@@ -165,9 +197,14 @@ namespace CoolGraphMaker
 
         }
 
-        private void DrawGraphBorder()
+        private void DrawGraphBorder(int width = 0, int height = 0)
         {
-            Bitmap canvas = new Bitmap(graphArea.Width, graphArea.Height);
+            Bitmap canvas;
+            if (width != 0 && height != 0)
+                canvas = new Bitmap(width, height);
+            else
+                canvas = new Bitmap(graphArea.Width, graphArea.Height);
+            
             Graphics g = Graphics.FromImage(canvas);
             
             g.DrawRectangle(Pens.Red, graphBorderRect);
@@ -180,11 +217,20 @@ namespace CoolGraphMaker
                 System.Drawing.Imaging.ImageFormat.Png);
         }
 
-        private void DrawXVerticalLines()
+        private void DrawXVerticalLines(int width, int height)
         {
-            Rectangle clientArea = graphArea.ClientRectangle;
+            Rectangle clientArea;
+            if (width != 0 && height != 0) // Saving image !
+                clientArea = new Rectangle(0, 0, width, height);
+            else // Drawing graph on application graph area
+                clientArea = graphArea.ClientRectangle;
 
-            Bitmap canvas = new Bitmap(graphArea.Width, graphArea.Height);
+            Bitmap canvas;
+            if (width != 0 && height != 0)
+                canvas = new Bitmap(width, height);
+            else
+                canvas = new Bitmap(graphArea.Width, graphArea.Height);
+
             Graphics g = Graphics.FromImage(canvas);
 
             // Retrieve settings to draw lines from xml
@@ -214,7 +260,7 @@ namespace CoolGraphMaker
             }
             for  (int index = 0; index < xScalePoints.Count; index++)
             {
-                DrawScaleString(xScaleValues[index], xScalePoints[index]);
+                DrawScaleString(xScaleValues[index], xScalePoints[index], width, height);
             }
             g.Dispose();
 
@@ -225,11 +271,20 @@ namespace CoolGraphMaker
                 System.Drawing.Imaging.ImageFormat.Png);
         }
 
-        private void DrawYHorizontalLines()
+        private void DrawYHorizontalLines(int width, int height)
         {
-            Rectangle clientArea = graphArea.ClientRectangle;
+            Rectangle clientArea;
+            if (width != 0 && height != 0) // Saving image !
+                clientArea = new Rectangle(0, 0, width, height);
+            else // Drawing graph on application graph area
+                clientArea = graphArea.ClientRectangle;
 
-            Bitmap canvas = new Bitmap(graphArea.Width, graphArea.Height);
+            Bitmap canvas;
+            if (width != 0 && height != 0)
+                canvas = new Bitmap(width, height);
+            else
+                canvas = new Bitmap(graphArea.Width, graphArea.Height);
+
             Graphics g = Graphics.FromImage(canvas);
 
             // Retrieve settings to draw lines from xml
@@ -260,7 +315,7 @@ namespace CoolGraphMaker
             }
             for (int index = 0; index < yScalePoints.Count; index++)
             {
-                DrawScaleString(yScaleValues[index], yScalePoints[index], false);
+                DrawScaleString(yScaleValues[index], yScalePoints[index], width, height, false);
             }
 
             g.Dispose();
@@ -628,11 +683,20 @@ namespace CoolGraphMaker
             return distance;
         }
 
-        private void DrawScaleString(float majorLine, Point majorLineStart, bool drawX = true)
+        private void DrawScaleString(float majorLine, Point majorLineStart, int width = 0, int height = 0, bool drawX = true)
         {
-            Rectangle clientArea = graphArea.ClientRectangle;
+            Rectangle clientArea;
+            if (width != 0 && height != 0) // Saving image !
+                clientArea = new Rectangle(0, 0, width, height);
+            else // Drawing graph on application graph area
+                clientArea = graphArea.ClientRectangle;
 
-            Bitmap canvas = new Bitmap(graphArea.Width, graphArea.Height);
+            Bitmap canvas;
+            if (width != 0 && height != 0)
+                canvas = new Bitmap(width, height);
+            else
+                canvas = new Bitmap(graphArea.Width, graphArea.Height);
+
             Graphics g = Graphics.FromImage(canvas);
 
             // Calc text extent
@@ -650,16 +714,18 @@ namespace CoolGraphMaker
                         maxStringSize = current;
                 }
             }
-
-
+            
+            // Please implement this function.
             Font scaleFont = FindProperScaleFont("temp");
 
             // Draw !
-            // X position is moved to left to centerize text
+            
             if (drawX)
+                // X position is moved to left to centerize text
                 g.DrawString(majorLine.ToString(), scaleFont, Brushes.Black, 
                     majorLineStart.X - (int)stringSize.Width/2, majorLineStart.Y);
             else
+                // X position is left agligned. Y position is moved to centerize.
                 g.DrawString(majorLine.ToString(), scaleFont, Brushes.Black,
                     majorLineStart.X - (int)maxStringSize.Width, majorLineStart.Y - (int)stringSize.Height/2);
 
@@ -674,11 +740,20 @@ namespace CoolGraphMaker
           
         }
 
-        private void DrawTitle()
+        private void DrawTitle(int width = 0, int height = 0)
         {
-            Rectangle clientArea = graphArea.ClientRectangle;
+            Rectangle clientArea;
+            if (width != 0 && height != 0) // Saving image !
+                clientArea = new Rectangle(0, 0, width, height);
+            else // Drawing graph on application graph area
+                clientArea = graphArea.ClientRectangle;
 
-            Bitmap canvas = new Bitmap(graphArea.Width, graphArea.Height);
+            Bitmap canvas;
+            if (width != 0 && height != 0)
+                canvas = new Bitmap(width, height);
+            else
+                canvas = new Bitmap(graphArea.Width, graphArea.Height);
+
             Graphics g = Graphics.FromImage(canvas);
 
 
@@ -762,11 +837,20 @@ namespace CoolGraphMaker
             g.Dispose();
             return newFont;
         }
-        private void DrawLine()
+        private void DrawLine(int width = 0, int height = 0)
         {
-            Rectangle clientArea = graphArea.ClientRectangle;
+            Rectangle clientArea;
+            if (width != 0 && height != 0) // Saving image !
+                clientArea = new Rectangle(0, 0, width, height);
+            else // Drawing graph on application graph area
+                clientArea = graphArea.ClientRectangle;
 
-            Bitmap canvas = new Bitmap(graphArea.Width, graphArea.Height);
+            Bitmap canvas;
+            if (width != 0 && height != 0)
+                canvas = new Bitmap(width, height);
+            else
+                canvas = new Bitmap(graphArea.Width, graphArea.Height);
+
             Graphics g = Graphics.FromImage(canvas);
 
             // Retrieve selected pair
@@ -954,11 +1038,18 @@ namespace CoolGraphMaker
             }
         }
 
-        private void DrawAllLayers()
+        private void DrawAllLayers(ref Graphics g)
         {
             // Draw back ground image
             Bitmap canvas = new Bitmap(graphArea.Width, graphArea.Height);
-            Graphics g = Graphics.FromImage(canvas);
+
+            bool saveToFile = true;
+            //Graphics g = Graphics.FromImage(canvas);
+            if (g == null)
+            {
+                g = Graphics.FromImage(canvas);
+                saveToFile = false;            
+            }
 
             foreach (GraphicLayer layer in graphicLayers)
             {
@@ -966,7 +1057,8 @@ namespace CoolGraphMaker
             }
 
             g.Dispose();
-            graphArea.Image = canvas;
+            if (!saveToFile)
+                graphArea.Image = canvas;
         }
 
 
@@ -1007,7 +1099,8 @@ namespace CoolGraphMaker
             yScaleValues.Clear();
 
             // Draw again!
-            DrawGraph();
+            Graphics g = null;
+            DrawGraph(ref g);
         }
 
         private void graphSelectionComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -1027,7 +1120,59 @@ namespace CoolGraphMaker
             yScaleValues.Clear();
 
             // Draw again!
-            DrawGraph(); 
+            Graphics g = null;
+            DrawGraph(ref g); 
+        }
+
+        private void saveGraphAsImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Clear previous data
+            graphicLayers.Clear();
+            //graphArea.Image = null;
+            xDataSet.Clear();
+            yDataSet.Clear();
+            xScalePoints.Clear();
+            xScaleValues.Clear();
+            yScalePoints.Clear();
+            yScaleValues.Clear();
+
+
+            // Save data as 
+            Bitmap canvas = new Bitmap(1280, 720);
+            //graphArea.DrawToBitmap(canvas, graphArea.ClientRectangle);
+            Graphics g = Graphics.FromImage(canvas);
+
+            DrawGraph(ref g, canvas.Width, canvas.Height);
+
+            g.Dispose();
+
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.FileName = "graph";
+            dialog.DefaultExt = ".jpg";
+            dialog.AddExtension = true;
+            dialog.SupportMultiDottedExtensions = true;
+            dialog.Filter = "jpeg file (*.jpg)|*.jpg| png file (*.png)|*.png| bitmap file (*.bmp)|*.bmp";
+            if (dialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            var format = new System.Drawing.Imaging.ImageFormat(Guid.NewGuid());
+            switch(dialog.FilterIndex)
+            {
+                case 0: // jpg
+                    format = System.Drawing.Imaging.ImageFormat.Jpeg;
+                    break;
+                case 1: // png
+                    format = System.Drawing.Imaging.ImageFormat.Png;
+                    break;
+                case 2: // bmp
+                    format = System.Drawing.Imaging.ImageFormat.Bmp;
+                    break;
+                default:
+                    throw new NotImplementedException();
+                    break;
+            }
+            canvas.Save(dialog.FileName,
+                System.Drawing.Imaging.ImageFormat.Png);
         }
     }
 }
