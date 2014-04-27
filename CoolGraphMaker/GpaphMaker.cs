@@ -41,7 +41,9 @@ namespace CoolGraphMaker
 
         // Scale string drawing point
         List<Point> xScalePoints;
+        List<float> xScaleValues;
         List<Point> yScalePoints;
+        List<float> yScaleValues;
 
         // Data to be drawn
         List<List<float>> xDataSet;
@@ -68,7 +70,9 @@ namespace CoolGraphMaker
             yDataSet = new List<List<float>>();
 
             xScalePoints = new List<Point>();
+            xScaleValues = new List<float>();
             yScalePoints = new List<Point>();
+            yScaleValues = new List<float>();
 
             // Start drawing
             DrawGraph();
@@ -203,6 +207,15 @@ namespace CoolGraphMaker
 
             DrawMajorAndMinorLines(ref g, max, min, majorLineSpan, minorLineSpan, scaleType, logBase);
 
+            if (xScalePoints.Count != xScaleValues.Count)
+            {
+                MessageBox.Show("Scale values and points to be drawn in Y scale are not same size.");
+                return;
+            }
+            for  (int index = 0; index < xScalePoints.Count; index++)
+            {
+                DrawScaleString(xScaleValues[index], xScalePoints[index]);
+            }
             g.Dispose();
 
             // Add to layers
@@ -238,6 +251,18 @@ namespace CoolGraphMaker
             int logBase = (int)selectedPair.Attribute("LogBaseOfYAxis");
 
             DrawMajorAndMinorLines(ref g, max, min, majorLineSpan, minorLineSpan, scaleType, logBase, false);
+            
+            // Draw scale string
+            if (yScalePoints.Count != yScaleValues.Count)
+            {
+                MessageBox.Show("Scale values and points to be drawn in Y scale are not same size.");
+                return;
+            }
+            for (int index = 0; index < yScalePoints.Count; index++)
+            {
+                DrawScaleString(yScaleValues[index], yScalePoints[index], false);
+            }
+
             g.Dispose();
 
             // Add to layers
@@ -257,6 +282,12 @@ namespace CoolGraphMaker
             {
                 return;
             }
+
+            // Set minimum value of scale
+            if (drawX)
+                xScaleValues.Add(min);
+            else
+                yScaleValues.Add(min);
 
             // Draw major lines
             if (scaleType.CompareTo("linear") == 0)
@@ -305,12 +336,19 @@ namespace CoolGraphMaker
 
                     g.DrawLine(Pens.Red, start, end);
 
+                    // Keep points to draw scale string
                     if (drawX)
                         xScalePoints.Add(start);
                     else
                         yScalePoints.Add(start);
 
                     majorLine += majorLineSpan;
+
+                    // Keep values to draw scale string
+                    if (drawX)
+                        xScaleValues.Add(majorLine);
+                    else
+                        yScaleValues.Add(majorLine);
                 }
             }
             else if (scaleType.CompareTo("log") == 0)
@@ -363,9 +401,28 @@ namespace CoolGraphMaker
                     if (majorLine == 0)
                         majorLine = 1;
 
+                    // Keep points to draw scale string
+                    if (drawX)
+                        xScalePoints.Add(start);
+                    else
+                        yScalePoints.Add(start);
+
                     majorLine *= majorLineSpan;
+
+                    // Keep values to draw scale string
+                    if (drawX)
+                        xScaleValues.Add(majorLine);
+                    else
+                        yScaleValues.Add(majorLine);
                 }
             }
+
+            // Keep final points to draw scale string
+            if (drawX)
+                xScalePoints.Add(graphBorderRBPoint);
+            else
+                yScalePoints.Add(graphBorderLTPoint);
+
 
             // Do we need minor lines ?
             if (minorLineSpan == 0)
@@ -571,16 +628,40 @@ namespace CoolGraphMaker
             return distance;
         }
 
-        private void DrawScaleString(float majorLine, Point majorLineStart)
+        private void DrawScaleString(float majorLine, Point majorLineStart, bool drawX = true)
         {
             Rectangle clientArea = graphArea.ClientRectangle;
 
             Bitmap canvas = new Bitmap(graphArea.Width, graphArea.Height);
             Graphics g = Graphics.FromImage(canvas);
 
+            // Calc text extent
+            SizeF stringSize = g.MeasureString(majorLine.ToString(), DefaultFont);
+
+            // Calc and align Y axis texts to left
+            SizeF maxStringSize = new SizeF();
+            if (!drawX)
+            {
+                // Find maximun string in Y scale
+                foreach (float v in yScaleValues)
+                {
+                    SizeF current = g.MeasureString(v.ToString(), DefaultFont);
+                    if (current.Width > maxStringSize.Width)
+                        maxStringSize = current;
+                }
+            }
 
 
+            Font scaleFont = FindProperScaleFont("temp");
 
+            // Draw !
+            // X position is moved to left to centerize text
+            if (drawX)
+                g.DrawString(majorLine.ToString(), scaleFont, Brushes.Black, 
+                    majorLineStart.X - (int)stringSize.Width/2, majorLineStart.Y);
+            else
+                g.DrawString(majorLine.ToString(), scaleFont, Brushes.Black,
+                    majorLineStart.X - (int)maxStringSize.Width, majorLineStart.Y - (int)stringSize.Height/2);
 
 
             g.Dispose();
@@ -605,7 +686,7 @@ namespace CoolGraphMaker
             string titleText = graphSelectionComboBox.Text;
             
             // Find out proper font
-            Font properFont = FindProperFont(titleText);
+            Font properFont = FindProperTitleFont(titleText);
 
             /// Calculate title area
             /// This x and y are center of title area
@@ -637,7 +718,7 @@ namespace CoolGraphMaker
         /// </summary>
         /// <param name="titleText"></param>
         /// <returns></returns>
-        private Font FindProperFont(string titleText)
+        private Font FindProperTitleFont(string titleText)
         {
             Bitmap canvas = new Bitmap(graphArea.Width, graphArea.Height);
             graphArea.DrawToBitmap(canvas, graphArea.ClientRectangle);
@@ -662,6 +743,25 @@ namespace CoolGraphMaker
             return newFont;
         }
 
+        /// <summary>
+        /// Retern font most likely best for scale.
+        /// Temporaly implementation. Please implement as you like.
+        /// </summary>
+        /// <param name="scaleText"></param>
+        /// <returns></returns>
+        private Font FindProperScaleFont(string scaleText)
+        {
+            Bitmap canvas = new Bitmap(graphArea.Width, graphArea.Height);
+            graphArea.DrawToBitmap(canvas, graphArea.ClientRectangle);
+            Graphics g = Graphics.FromImage(canvas);
+
+            // This is height of title area.
+            // Find font size which fit to this height
+            Font newFont = DefaultFont;
+
+            g.Dispose();
+            return newFont;
+        }
         private void DrawLine()
         {
             Rectangle clientArea = graphArea.ClientRectangle;
@@ -901,6 +1001,10 @@ namespace CoolGraphMaker
             graphArea.Image = null;
             xDataSet.Clear();
             yDataSet.Clear();
+            xScalePoints.Clear();
+            xScaleValues.Clear();
+            yScalePoints.Clear();
+            yScaleValues.Clear();
 
             // Draw again!
             DrawGraph();
@@ -917,6 +1021,10 @@ namespace CoolGraphMaker
             graphArea.Image = null;
             xDataSet.Clear();
             yDataSet.Clear();
+            xScalePoints.Clear();
+            xScaleValues.Clear();
+            yScalePoints.Clear();
+            yScaleValues.Clear();
 
             // Draw again!
             DrawGraph(); 
